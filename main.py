@@ -1,6 +1,7 @@
 from flask import Flask
 from controladores.escuela_controller import EscuelaController
 from controladores.estudiante_controller import EstudianteController
+from controladores.curso_controller import CursoController
 
 app = Flask(__name__)
 
@@ -65,6 +66,35 @@ def editar_estudiante(id):
 def eliminar_estudiante(id):
     controlador = EstudianteController()
     response = controlador.eliminar_estudiante(id)
+    controlador.cerrar()
+    return response
+
+# === RUTAS PARA CURSOS ===
+@app.route('/cursos')
+def mostrar_cursos():
+    controlador = CursoController()
+    response = controlador.mostrar_cursos()
+    controlador.cerrar()
+    return response
+
+@app.route('/curso/agregar', methods=['POST'])
+def agregar_curso():
+    controlador = CursoController()
+    response = controlador.agregar_curso()
+    controlador.cerrar()
+    return response
+
+@app.route('/curso/editar/<int:id>', methods=['POST'])
+def editar_curso(id):
+    controlador = CursoController()
+    response = controlador.editar_curso(id)
+    controlador.cerrar()
+    return response
+
+@app.route('/curso/eliminar/<int:id>', methods=['POST'])
+def eliminar_curso(id):
+    controlador = CursoController()
+    response = controlador.eliminar_curso(id)
     controlador.cerrar()
     return response
 

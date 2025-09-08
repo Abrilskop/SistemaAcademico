@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Cursos{% endblock %}
+
+{% block content %}
+<h1 class="page-header">Gestión de Cursos</h1>
+
+<div class="row">
+    <!-- Columna Izquierda: Formulario para Agregar Nuevo Curso -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-book-medical me-2"></i>Agregar Nuevo Curso
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('agregar_curso') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Curso</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="creditos" class="form-label">Créditos</label>
+                        <input type="number" class="form-control" id="creditos" name="creditos" required min="1">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="fas fa-save me-2"></i>Guardar Curso
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna Derecha: Tabla de Cursos Registrados -->
+    <div class="col-lg-8">
+        <div class="card">
+             <div class="card-header">
+                <i class="fas fa-list-ul me-2"></i>Cursos Registrados
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="ps-3">ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Créditos</th>
+                                <th scope="col" class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for curso in cursos %}
+                            <tr>
+                                <td class="ps-3">{{ curso.id_curso }}</td>
+                                <td>{{ curso.nombre }}</td>
+                                <td>{{ curso.creditos }}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarModal-{{ curso.id_curso }}" title="Editar">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <form id="delete-form-{{ curso.id_curso }}" action="{{ url_for('eliminar_curso', id=curso.id_curso) }}" method="POST" class="d-inline">
+                                        <button type="button" class="btn btn-danger btn-sm delete-btn" 
+                                                data-form-id="delete-form-{{ curso.id_curso }}"
+                                                data-escuela-nombre="{{ curso.nombre }}"
+                                                title="Eliminar">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Aún no hay cursos registrados.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales de Edición -->
+{% for curso in cursos %}
+<div class="modal fade" id="editarModal-{{ curso.id_curso }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Curso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('editar_curso', id=curso.id_curso) }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="edit-nombre-{{ curso.id_curso }}" class="form-label">Nombre del Curso</label>
+                        <input type="text" class="form-control" name="nombre" id="edit-nombre-{{ curso.id_curso }}" value="{{ curso.nombre }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-creditos-{{ curso.id_curso }}" class="form-label">Créditos</label>
+                        <input type="number" class="form-control" name="creditos" id="edit-creditos-{{ curso.id_curso }}" value="{{ curso.creditos }}" required min="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

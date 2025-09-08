@@ -46,7 +46,7 @@
                 </li>
                 <li class="sidebar-item">
                     <!-- El endpoint 'mostrar_cursos' no existe aún, pero lo dejamos preparado -->
-                    <a href="#" class="sidebar-link {% if request.endpoint == 'mostrar_cursos' %}active{% endif %}">
+                    <a href="{{ url_for('mostrar_cursos') }}" class="sidebar-link {% if request.endpoint == 'mostrar_cursos' %}active{% endif %}">
                         <i class="fas fa-book"></i>
                         Cursos
                     </a>
