@@ -51,6 +51,13 @@
                         Cursos
                     </a>
                 </li>
+                <!-- ... (tus otros enlaces del menú) ... -->
+                <li class="sidebar-item">
+                    <a href="{{ url_for('mostrar_matriculas') }}" class="sidebar-link {% if request.endpoint == 'mostrar_matriculas' %}active{% endif %}">
+                        <i class="fas fa-file-signature"></i>
+                        Matrículas
+                    </a>
+                </li>
             </ul>
         </nav>
 

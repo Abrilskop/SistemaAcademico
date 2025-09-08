@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Matrículas{% endblock %}
+
+{% block content %}
+<h1 class="page-header">Gestión de Matrículas</h1>
+
+<div class="row">
+    <!-- Formulario para Agregar Nueva Matrícula -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-file-signature me-2"></i>Registrar Nueva Matrícula
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('agregar_matricula') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="id_estudiante" class="form-label">Estudiante</label>
+                        <select class="form-select" id="id_estudiante" name="id_estudiante" required>
+                            <option value="" disabled selected>Seleccione un estudiante</option>
+                            {% for estudiante in estudiantes %}
+                            <option value="{{ estudiante.id_estudiante }}">{{ estudiante.nombres }} {{ estudiante.apellidos }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_curso" class="form-label">Curso</label>
+                        <select class="form-select" id="id_curso" name="id_curso" required>
+                            <option value="" disabled selected>Seleccione un curso</option>
+                            {% for curso in cursos %}
+                            <option value="{{ curso.id_curso }}">{{ curso.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ciclo" class="form-label">Ciclo</label>
+                        <input type="text" class="form-control" id="ciclo" name="ciclo" placeholder="Ej: 2025-I" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="fas fa-save me-2"></i>Guardar Matrícula
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Matrículas Registradas -->
+    <div class="col-lg-8">
+        <div class="card">
+             <div class="card-header">
+                <i class="fas fa-list-ul me-2"></i>Matrículas Registradas
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="ps-3">Estudiante</th>
+                                <th scope="col">Curso</th>
+                                <th scope="col">Ciclo</th>
+                                <th scope="col" class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for matricula in matriculas %}
+                            <tr>
+                                <td class="ps-3">{{ matricula.nombre_estudiante }}</td>
+                                <td>{{ matricula.nombre_curso }}</td>
+                                <td>{{ matricula.ciclo }}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarModal-{{ matricula.id_matricula }}" title="Editar">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <form id="delete-form-{{ matricula.id_matricula }}" action="{{ url_for('eliminar_matricula', id=matricula.id_matricula) }}" method="POST" class="d-inline">
+                                        <button type="button" class="btn btn-danger btn-sm delete-btn" 
+                                                data-form-id="delete-form-{{ matricula.id_matricula }}"
+                                                data-escuela-nombre="la matrícula de {{ matricula.nombre_estudiante }}"
+                                                title="Eliminar">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Aún no hay matrículas registradas.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales de Edición -->
+{% for matricula in matriculas %}
+<div class="modal fade" id="editarModal-{{ matricula.id_matricula }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Matrícula</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('editar_matricula', id=matricula.id_matricula) }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Estudiante</label>
+                        <select class="form-select" name="id_estudiante" required>
+                            {% for estudiante in estudiantes %}
+                            <option value="{{ estudiante.id_estudiante }}" {% if estudiante.id_estudiante == matricula.id_estudiante %}selected{% endif %}>{{ estudiante.nombres }} {{ estudiante.apellidos }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Curso</label>
+                        <select class="form-select" name="id_curso" required>
+                             {% for curso in cursos %}
+                            <option value="{{ curso.id_curso }}" {% if curso.id_curso == matricula.id_curso %}selected{% endif %}>{{ curso.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ciclo</label>
+                        <input type="text" class="form-control" name="ciclo" value="{{ matricula.ciclo }}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
