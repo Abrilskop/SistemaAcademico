@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Estudiantes{% endblock %}
+
+{% block content %}
+<h1 class="page-header">Gestión de Estudiantes</h1>
+
+<div class="row">
+    <!-- Columna Izquierda: Formulario para Agregar Nuevo Estudiante -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-user-plus me-2"></i>Agregar Nuevo Estudiante
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('agregar_estudiante') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="nombres" class="form-label">Nombres</label>
+                        <input type="text" class="form-control" id="nombres" name="nombres" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="apellidos" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="correo" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="correo" name="correo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_escuela" class="form-label">Escuela Profesional</label>
+                        <select class="form-select" id="id_escuela" name="id_escuela" required>
+                            <option value="" disabled selected>Seleccione una escuela</option>
+                            {% for escuela in escuelas %}
+                            <option value="{{ escuela.id_escuela }}">{{ escuela.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="fas fa-save me-2"></i>Guardar Estudiante
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna Derecha: Tabla de Estudiantes Registrados -->
+    <div class="col-lg-8">
+        <div class="card">
+             <div class="card-header">
+                <i class="fas fa-users me-2"></i>Estudiantes Registrados
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="ps-3">Nombres</th>
+                                <th scope="col">Apellidos</th>
+                                <th scope="col">Correo</th>
+                                <th scope="col" class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for estudiante in estudiantes %}
+                            <tr>
+                                <td class="ps-3">{{ estudiante.nombres }}</td>
+                                <td>{{ estudiante.apellidos }}</td>
+                                <td>{{ estudiante.correo }}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarModal-{{ estudiante.id_estudiante }}" title="Editar">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <form id="delete-form-{{ estudiante.id_estudiante }}" action="{{ url_for('eliminar_estudiante', id=estudiante.id_estudiante) }}" method="POST" class="d-inline">
+                                        <button type="button" class="btn btn-danger btn-sm delete-btn" 
+                                                data-form-id="delete-form-{{ estudiante.id_estudiante }}"
+                                                data-escuela-nombre="{{ estudiante.nombres }}"
+                                                title="Eliminar">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Aún no hay estudiantes registrados.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales de Edición -->
+{% for estudiante in estudiantes %}
+<div class="modal fade" id="editarModal-{{ estudiante.id_estudiante }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Editar Estudiante</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('editar_estudiante', id=estudiante.id_estudiante) }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="edit-nombres-{{ estudiante.id_estudiante }}" class="form-label">Nombres</label>
+                        <input type="text" class="form-control" name="nombres" id="edit-nombres-{{ estudiante.id_estudiante }}" value="{{ estudiante.nombres }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-apellidos-{{ estudiante.id_estudiante }}" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" name="apellidos" id="edit-apellidos-{{ estudiante.id_estudiante }}" value="{{ estudiante.apellidos }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-correo-{{ estudiante.id_estudiante }}" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" name="correo" id="edit-correo-{{ estudiante.id_estudiante }}" value="{{ estudiante.correo }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-id_escuela-{{ estudiante.id_estudiante }}" class="form-label">Escuela Profesional</label>
+                        <select class="form-select" name="id_escuela" id="edit-id_escuela-{{ estudiante.id_estudiante }}" required>
+                            {% for escuela in escuelas %}
+                            <option value="{{ escuela.id_escuela }}" {% if escuela.id_escuela == estudiante.id_escuela %}selected{% endif %}>{{ escuela.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
