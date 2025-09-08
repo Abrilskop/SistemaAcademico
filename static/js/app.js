@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     cancelButtonColor: '#3085d6', // Azul para el botón de cancelar
                     confirmButtonText: 'Sí, ¡eliminar!',
                     cancelButtonText: 'Cancelar'
-                    // NOTA: Se eliminaron las líneas 'background' y 'color' para que la alerta use el tema claro por defecto.
                 }).then((result) => {
                     // Si el usuario hace clic en "Sí, ¡eliminar!"...
                     if (result.isConfirmed) {
@@ -65,4 +64,49 @@ document.addEventListener('DOMContentLoaded', function () {
         overlay.addEventListener('click', toggleSidebar);
     }
 
+    // === LÓGICA PARA EL GRÁFICO DEL DASHBOARD (CHART.JS) ===
+
+    // 1. Intentar seleccionar el canvas del gráfico.
+    const chartCanvas = document.getElementById('estudiantesPorEscuelaChart');
+
+    // 2. Si el canvas existe (es decir, estamos en la página del dashboard)...
+    if (chartCanvas) {
+        // 3. Obtener los datos de los elementos span ocultos y convertirlos de texto a objeto JavaScript.
+        const chartLabels = JSON.parse(document.getElementById('chart-data-labels').textContent);
+        const chartDataValues = JSON.parse(document.getElementById('chart-data-values').textContent);
+        
+        // 4. Crear el gráfico.
+        const ctx = chartCanvas.getContext('2d');
+        const myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'N° de Estudiantes',
+                    data: chartDataValues,
+                    backgroundColor: 'rgba(74, 128, 255, 0.8)',
+                    borderColor: 'rgba(74, 128, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            // Asegurarse de que solo se muestren números enteros en el eje Y
+                            stepSize: 1 
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
 });

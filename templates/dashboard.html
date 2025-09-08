@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="page-header">Dashboard</h1>
+
+<!-- Fila de Tarjetas de Estadísticas (KPIs) -->
+<div class="row">
+    <!-- Tarjeta Total Estudiantes -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-primary border-4 h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold text-primary text-uppercase mb-1">Estudiantes</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{ data.counts.total_estudiantes }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user-graduate fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta Total Escuelas -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-success border-4 h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold text-success text-uppercase mb-1">Escuelas</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{ data.counts.total_escuelas }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-school fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta Total Cursos -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-info border-4 h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold text-info text-uppercase mb-1">Cursos</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{ data.counts.total_cursos }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-book fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta Total Matrículas -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-warning border-4 h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold text-warning text-uppercase mb-1">Matrículas</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{ data.counts.total_matriculas }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file-signature fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fila de Gráfico y Actividad Reciente -->
+<div class="row">
+    <!-- Gráfico de Barras: Distribución de Estudiantes -->
+    <div class="col-lg-7 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">Distribución de Estudiantes por Escuela</h6>
+            </div>
+            <div class="card-body">
+                <!-- Elementos span para pasar los datos del gráfico a app.js -->
+                <span id="chart-data-labels" style="display:none;">{{ data.chart_data.labels|tojson }}</span>
+                <span id="chart-data-values" style="display:none;">{{ data.chart_data.data|tojson }}</span>
+                
+                <div class="chart-container" style="position: relative; height:300px">
+                    <canvas id="estudiantesPorEscuelaChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Actividad Reciente -->
+    <div class="col-lg-5 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">Últimas Matrículas</h6>
+            </div>
+            <div class="card-body">
+                {% for matricula in data.ultimas_matriculas %}
+                <div class="d-flex align-items-center mb-3">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="fw-bold mb-0">{{ matricula.nombre_estudiante }}</p>
+                        <small class="text-muted">Se matriculó en {{ matricula.nombre_curso }} ({{ matricula.ciclo }})</small>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted">No hay actividad reciente para mostrar.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

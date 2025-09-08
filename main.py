@@ -3,14 +3,16 @@ from controladores.escuela_controller import EscuelaController
 from controladores.estudiante_controller import EstudianteController
 from controladores.curso_controller import CursoController
 from controladores.matricula_controller import MatriculaController
+from controladores.dashboard_controller import DashboardController
 
 app = Flask(__name__)
 
 # Esta clave se usa para firmar las sesiones y los mensajes flash.
 app.secret_key = 'dev-sistema-academico-2025'
 
+# === RUTAS PARA ESCUELAS ===
 # Ruta principal para mostrar todas las escuelas (GET)
-@app.route('/')
+@app.route('/escuela')
 def mostrar_escuelas():
     controlador = EscuelaController()
     response = controlador.mostrar_escuelas()
@@ -125,6 +127,14 @@ def editar_matricula(id):
 def eliminar_matricula(id):
     controlador = MatriculaController()
     response = controlador.eliminar_matricula(id)
+    controlador.cerrar()
+    return response
+
+# === RUTA PARA EL DASHBOARD ===
+@app.route('/')
+def mostrar_dashboard():
+    controlador = DashboardController()
+    response = controlador.mostrar_dashboard()
     controlador.cerrar()
     return response
 
