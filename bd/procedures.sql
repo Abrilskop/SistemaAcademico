@@ -66,11 +66,21 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS sp_obtener_escuela;
 DELIMITER $$
 
-CREATE PROCEDURE sp_obtener_escuela(
-    IN id_escuela INT
+USE sistema_academico;
+
+-- ELIMINAMOS EL PROCEDIMIENTO ANTERIOR SI EXISTE
+DROP PROCEDURE IF EXISTS `sp_buscar_escuela_por_nombre`;
+
+DELIMITER $$
+CREATE PROCEDURE `sp_buscar_escuela_por_nombre`(
+    IN p_nombre VARCHAR(100)
 )
 BEGIN
-    SELECT * FROM escuela WHERE id_escuela = id_escuela;
+    -- Usamos LIKE y CONCAT para buscar coincidencias parciales.
+    -- Ej: si p_nombre es 'sist', encontrará 'Ingeniería de Sistemas'.
+    SELECT * 
+    FROM escuela 
+    WHERE nombre LIKE CONCAT('%', p_nombre, '%');
 END$$
 DELIMITER ;
 
