@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Escuelas{% endblock %}
+
+{% block content %}
+<h1 class="page-header">Gestión de Escuelas Profesionales</h1>
+
+<div class="row">
+    <!-- Columna Izquierda: Formulario para Agregar Nueva Escuela -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-plus-circle me-2"></i>Agregar Nueva Escuela
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('agregar_escuela') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre de la Escuela</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ej: Ingeniería de Software" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="fas fa-save me-2"></i>Guardar Escuela
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna Derecha: Tabla de Escuelas Registradas y Búsqueda -->
+    <div class="col-lg-8">
+        <div class="card">
+             <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+                <span class="me-3 mb-2 mb-md-0"><i class="fas fa-list-ul me-2"></i>Escuelas Registradas</span>
+                
+                <!-- Formulario de Búsqueda -->
+                <form action="{{ url_for('mostrar_escuelas') }}" method="GET" class="d-flex" style="min-width: 250px;">
+                    <input class="form-control me-2" type="search" placeholder="Buscar por nombre..." name="q" value="{{ search_query or '' }}" aria-label="Buscar">
+                    <button class="btn btn-outline-primary" type="submit" title="Buscar">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <!-- El botón para limpiar solo aparece si hay una búsqueda activa -->
+                    {% if search_query %}
+                    <a href="{{ url_for('mostrar_escuelas') }}" class="btn btn-outline-secondary ms-2" title="Limpiar búsqueda">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    {% endif %}
+                </form>
+             </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="ps-3">ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col" class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Bucle para mostrar las escuelas de la base de datos -->
+                            {% for escuela in escuelas %}
+                            <tr>
+                                <td class="ps-3">{{ escuela['id_escuela'] }}</td>
+                                <td>{{ escuela['nombre'] }}</td>
+                                <td class="text-center">
+                                    <!-- Botón para abrir el modal de edición -->
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarModal-{{ escuela['id_escuela'] }}" title="Editar">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    
+                                    <!-- Formulario oculto de eliminación, controlado por JavaScript (SweetAlert2) -->
+                                    <form id="delete-form-{{ escuela['id_escuela'] }}" action="{{ url_for('eliminar_escuela', id=escuela['id_escuela']) }}" method="POST" class="d-inline">
+                                        <button type="button" class="btn btn-danger btn-sm delete-btn" 
+                                                data-form-id="delete-form-{{ escuela['id_escuela'] }}"
+                                                data-escuela-nombre="{{ escuela['nombre'] }}"
+                                                title="Eliminar">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <!-- Mensaje que se muestra si no hay escuelas para mostrar -->
+                            <tr>
+                                <td colspan="3" class="text-center py-4 text-muted">
+                                    {% if search_query %}
+                                        No se encontraron escuelas que coincidan con "<strong>{{ search_query }}</strong>".
+                                    {% else %}
+                                        Aún no hay escuelas registradas.
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Modales de Edición (se generan fuera del flujo principal para evitar bugs) ===== -->
+{% for escuela in escuelas %}
+<div class="modal fade" id="editarModal-{{ escuela['id_escuela'] }}" tabindex="-1" aria-labelledby="editarModalLabel-{{ escuela['id_escuela'] }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarModalLabel-{{ escuela['id_escuela'] }}"><i class="fas fa-pencil-alt me-2"></i>Editar Escuela</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('editar_escuela', id=escuela['id_escuela']) }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre-{{ escuela['id_escuela'] }}" class="form-label">Nuevo Nombre</label>
+                        <input type="text" class="form-control" name="nombre" id="nombre-{{ escuela['id_escuela'] }}" value="{{ escuela['nombre'] }}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

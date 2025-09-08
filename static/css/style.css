@@ -1,0 +1,209 @@
+/* Importar Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* === 1. Variables de Color y Configuración General === */
+:root {
+    --bg-main: #F5F6FA;
+    --bg-sidebar: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --primary-blue: #4A80FF;
+    --primary-hover: #3b66cc;
+    --text-dark: #343A40;
+    --text-light: #6C757D;
+    --border-color: #DEE2E6;
+    --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
+
+/* === 2. Layout Principal y Sidebar === */
+.page-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    padding: 1.5rem 1rem;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* === 3. Estilos del Sidebar (Como la Referencia) === */
+.sidebar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-left: 0.75rem;
+}
+
+.sidebar-nav { list-style: none; padding-left: 0; }
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--text-light);
+    text-decoration: none;
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.sidebar-link i {
+    margin-right: 1rem;
+    width: 20px;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.sidebar-link.active, .sidebar-link:hover {
+    background-color: var(--primary-blue);
+    color: #fff;
+}
+
+/* === 4. Estilos de Componentes (Card, Form, Table, Button) === */
+.page-header {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    font-size: 1.75rem;
+}
+
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: none; /* Un look más plano como en la referencia */
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+}
+
+.form-control {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+}
+.form-control:focus {
+    background-color: #fff;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(74, 128, 255, 0.25);
+}
+
+.table { border-color: var(--border-color); }
+.table thead th {
+    background-color: #f8f9fc;
+    border-bottom-width: 1px;
+    font-weight: 600;
+    color: var(--text-light);
+}
+.table td, .table th { vertical-align: middle; }
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    font-weight: 500;
+}
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+/* === 5. Estilo del Modal (Corregido para Tema Claro) === */
+.modal-content {
+    background-color: var(--bg-card);
+    color: var(--text-dark);
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+}
+.modal-header { border-bottom-color: var(--border-color); }
+.modal-footer { border-top-color: var(--border-color); }
+
+/* === 6. Diseño Responsivo === */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        height: 100vh;
+        z-index: 1030;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .main-content {
+        width: 100%;
+    }
+}
+@media (max-width: 767.98px) {
+    .main-content { padding: 1.5rem; }
+    .page-header { font-size: 1.5rem; }
+}
+
+/* === 7. ESTILOS ADICIONALES PARA MENÚ MÓVIL === */
+
+/* Barra superior que solo aparece en móviles */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-card);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: var(--text-dark);
+    font-size: 1.25rem;
+}
+
+.topbar-brand {
+    font-weight: 700;
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+/* Estado activo para mostrar el sidebar */
+.sidebar.active {
+    left: 0; /* Esto hace que el sidebar se deslice a la vista */
+}
+
+/* Capa de fondo para oscurecer el contenido principal */
+.overlay {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1020; /* Se sitúa entre el contenido y el sidebar */
+}
+
+.overlay.active {
+    display: block; /* Se muestra cuando el menú está activo */
+}

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Sopita Dashboard{% endblock %} - Sistema Académico</title>
+
+    <!-- Librerías y CSS (sin cambios) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- ===== Sidebar de Navegación (con ID para JS) ===== -->
+        <nav class="sidebar" id="sidebar">
+            <a href="/" class="sidebar-brand">
+                <i class="fas fa-layer-group me-2"></i>
+                Sopita
+            </a>
+            
+            <ul class="sidebar-nav">
+                <!-- ... tus links de navegación ... -->
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/" class="sidebar-link active">
+                        <i class="fas fa-school"></i>
+                        Escuelas
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-user-graduate"></i>
+                        Estudiantes
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-book"></i>
+                        Cursos
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- ===== Contenido Principal Wrapper ===== -->
+        <div class="main-content-wrapper flex-grow-1">
+            <!-- ===== NUEVA BARRA SUPERIOR PARA MÓVILES ===== -->
+            <header class="topbar d-lg-none">
+                <a href="/" class="topbar-brand">DashStack</a>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </header>
+
+            <main class="main-content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- ===== NUEVA CAPA DE FONDO (OVERLAY) ===== -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
